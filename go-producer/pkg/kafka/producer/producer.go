@@ -37,6 +37,32 @@ func (p *MyProducer) init() {
 	p.producer = producer
 }
 
+func (p *MyProducer) SendMessage(topic, message string) (err error) {
+	deliveryChan := make(chan kafka.Event)
+	defer close(deliveryChan)
+
+	err = p.producer.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
+		Value:          []byte(message),
+		Headers:        []kafka.Header{{Key: "myTestHeader", Value: []byte("header values are binary")}},
+	}, deliveryChan)
+	if err != nil {
+		log.Printf("failed to produce: %v\n", err.Error())
+		return
+	}
+
+	e := <-deliveryChan
+	m := e.(*kafka.Message)
+
+	if m.TopicPartition.Error != nil {
+		log.Printf("failed to produce: %v\n", m.TopicPartition.Error.Error())
+		return
+	}
+
+	log.Printf("Delivered message to topic %s [%d] at offset %v\n", *m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
+	return
+}
+
 func (p *MyProducer) Close() {
 	p.producer.Close()
 }
