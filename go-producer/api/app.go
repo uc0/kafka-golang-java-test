@@ -3,14 +3,15 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"go-producer/api/handlers"
+	"github.com/joho/godotenv"
+	"github.com/uc0/kafka-golang-java-test.git/api/handlers"
 	"log"
 )
 
 func main() {
-	//if err := godotenv.Load(".env"); err != nil {
-	//	log.Fatal(err)
-	//}
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
 
 	handler := handlers.NewHandler()
 
@@ -22,7 +23,8 @@ func main() {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
-	v1.Post("/", handler.ProduceTestMsg)
+	v1.Post("/test1", handler.ProduceTest1Msg)
+	v1.Post("/test2", handler.ProduceTest2Msg)
 
-	log.Fatal(app.Listen(":8080"))
+	log.Fatal(app.Listen(":8088"))
 }

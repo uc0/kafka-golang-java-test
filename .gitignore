@@ -1,5 +1,12 @@
 # Custom gignore
 .idea/
+**/.idea
+.env
+**/.env
+*/.env
+go-producer/proto
+java-consumer-protobuf/src/main/java/org/example/protobuf
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains,goland,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=jetbrains,goland,visualstudiocode
